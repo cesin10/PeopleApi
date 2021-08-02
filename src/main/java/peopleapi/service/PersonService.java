@@ -1,5 +1,8 @@
 package peopleapi.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ public class PersonService {
 	
 private PersonRepository personRepository;
 
+//personMapper servirá para converter DtoToEntity e EntityToDto
 private final PersonMapper personMapper = PersonMapper.INSTANCE;
 	
 
@@ -33,8 +37,15 @@ public PersonService(PersonRepository personRepository) {
 		return MessageResponseDTO
 				.builder()
 				.message("Created person with ID " + savedPerson.getId())
-				.build();
+				.build();		
+	}
+	
+	public List<PersonDTO> listAll(){
 		
+		List<Person> allPeople = personRepository.findAll(); 
+		return allPeople.stream()
+				        .map(personMapper::toDto)
+				        .collect(Collectors.toList());	
 	}
 
 }
