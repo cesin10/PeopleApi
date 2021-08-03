@@ -1,6 +1,7 @@
 package peopleapi.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import peopleapi.dto.MessageResponseDTO;
 import peopleapi.dto.request.PersonDTO;
 import peopleapi.entity.Person;
+import peopleapi.exception.PersonNotFoundException;
 import peopleapi.mapper.PersonMapper;
 import peopleapi.repository.PersonRepository;
 
@@ -47,5 +49,32 @@ public PersonService(PersonRepository personRepository) {
 				        .map(personMapper::toDto)
 				        .collect(Collectors.toList());	
 	}
+	
+	public PersonDTO findById(Long id) throws PersonNotFoundException {
+        Person person = personRepository.findById(id)
+        .orElseThrow(()-> new PersonNotFoundException(id)); 
+		return personMapper.toDto(person);
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
