@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import peopleapi.dto.MessageResponseDTO;
 import peopleapi.dto.request.PersonDTO;
@@ -42,6 +43,13 @@ public PersonService(PersonRepository personRepository) {
 				.build();		
 	}
 	
+	//Método auxiliar para verificar se o id existe na base de dados ou não
+	private  Person verifyIfExists(Long id) throws PersonNotFoundException {
+		return personRepository.findById(id)
+        .orElseThrow(()-> new PersonNotFoundException(id)); 
+		
+	}
+	
 	public List<PersonDTO> listAll(){
 		
 		List<Person> allPeople = personRepository.findAll(); 
@@ -50,10 +58,18 @@ public PersonService(PersonRepository personRepository) {
 				        .collect(Collectors.toList());	
 	}
 	
+	
+	
 	public PersonDTO findById(Long id) throws PersonNotFoundException {
-        Person person = personRepository.findById(id)
-        .orElseThrow(()-> new PersonNotFoundException(id)); 
-		return personMapper.toDto(person);
+        Person person = verifyIfExists(id);
+        return personMapper.toDto(person);
+	}
+	
+	
+	public void delete(Long id) throws PersonNotFoundException {
+		verifyIfExists(id); 
+		personRepository.deleteById(id);
+		
 	}
 
 }
