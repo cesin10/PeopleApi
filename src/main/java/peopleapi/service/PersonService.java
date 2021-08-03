@@ -27,30 +27,9 @@ private final PersonMapper personMapper = PersonMapper.INSTANCE;
 @Autowired	
 public PersonService(PersonRepository personRepository) {
 	 this.personRepository = personRepository;
-}
+}	
 
-
-
-	public MessageResponseDTO createPerson(PersonDTO personDTO) {
-
-		//É necessário converter um tipo DTO para Entity porque o JPA não lida com DTO
-		Person personToSave = personMapper.toModel(personDTO);
-		
-		Person savedPerson = personRepository.save(personToSave);
-		return MessageResponseDTO
-				.builder()
-				.message("Created person with ID " + savedPerson.getId())
-				.build();		
-	}
-	
-	//Método auxiliar para verificar se o id existe na base de dados ou não
-	private  Person verifyIfExists(Long id) throws PersonNotFoundException {
-		return personRepository.findById(id)
-        .orElseThrow(()-> new PersonNotFoundException(id)); 
-		
-	}
-	
-	public List<PersonDTO> listAll(){
+    public List<PersonDTO> listAll(){
 		
 		List<Person> allPeople = personRepository.findAll(); 
 		return allPeople.stream()
@@ -71,6 +50,47 @@ public PersonService(PersonRepository personRepository) {
 		personRepository.deleteById(id);
 		
 	}
+	
+	
+	public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
+
+		verifyIfExists(id);
+		//É necessário converter um tipo DTO para Entity porque o JPA não lida com DTO
+		Person personToUpdate = personMapper.toModel(personDTO);
+		
+		Person updatedPerson = personRepository.save(personToUpdate);
+		return createMessageResponse(updatedPerson.getId(), "Updated Person with Id ");		
+	}
+
+	
+	public MessageResponseDTO createPerson(PersonDTO personDTO) {
+
+		//É necessário converter um tipo DTO para Entity porque o JPA não lida com DTO
+		Person personToSave = personMapper.toModel(personDTO);
+		
+		Person savedPerson = personRepository.save(personToSave);
+		return createMessageResponse(savedPerson.getId(),"Saved Person with Id ");
+	}
+
+	
+	//Métodos 	
+	
+	
+	private MessageResponseDTO createMessageResponse(Long id, String message) {
+		return MessageResponseDTO
+				.builder()
+				.message(message + id)
+				.build();
+	}
+	
+	
+	//Método auxiliar para verificar se o id existe na base de dados ou não
+		private  Person verifyIfExists(Long id) throws PersonNotFoundException {
+			return personRepository.findById(id)
+	        .orElseThrow(()-> new PersonNotFoundException(id)); 
+			
+		}
+	
 
 }
 
