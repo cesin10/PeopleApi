@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
 import peopleapi.dto.MessageResponseDTO;
 import peopleapi.dto.request.PersonDTO;
 import peopleapi.exception.PersonNotFoundException;
@@ -23,6 +24,7 @@ import peopleapi.service.PersonService;
 
 @RestController
 @RequestMapping("/api/v1/people")
+//@AllArgsConstructor(onConstructor = @__(@Autowired)) -> retira os construtores na utilização do @Autowired
 public class PeopleController {
 	
 	private PersonService personService;

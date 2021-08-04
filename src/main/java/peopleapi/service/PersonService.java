@@ -16,6 +16,7 @@ import peopleapi.mapper.PersonMapper;
 import peopleapi.repository.PersonRepository;
 
 @Service
+//@AllArgsConstructor(onConstructor = @__(@Autowired)) -> retira os construtores na utilização do @Autowired
 public class PersonService {
 	
 private PersonRepository personRepository;
